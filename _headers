@@ -1,8 +1,2 @@
-/dist/*
-  Cache-Control: public, max-age=31536000
-  Content-Type: text/css
-
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
-  X-XSS-Protection: 1; mode=block
+/*.css
+ content-type: text/css
