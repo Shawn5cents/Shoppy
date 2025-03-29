@@ -22,7 +22,7 @@
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold text-tmobile">🛍️ Shoppy</h1>
             <div class="flex gap-2">
-                <button id="addListBtn" class="bg-tmobile text-white px-4 py-2 rounded-lg hover:bg-opacity-90">
+                <button id="addListBtn" class="btn">
                     ✨ New List
                 </button>
             </div>
@@ -44,22 +44,22 @@
     </footer>
 
     <!-- Store Location Modal -->
-    <div id="locationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+    <div id="locationModal" class="hidden modal">
+        <div class="modal-content">
             <h2 class="text-xl font-bold mb-4">📍 Set Store Location</h2>
             <div class="space-y-4">
                 <div class="flex space-x-2">
-                    <button id="useCurrentLocation" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                    <button id="useCurrentLocation" class="flex-1 btn">
                         📱 Use Current Location
                     </button>
-                    <button id="enterAddress" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                    <button id="enterAddress" class="flex-1 btn">
                         🏪 Enter Address
                     </button>
                 </div>
                 <!-- Map Container -->
                 <div id="locationMap" class="w-full h-64 rounded-lg mb-4"></div>
                 <div id="addressInput">
-                    <input type="text" id="storeAddress" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Search for a location or click on the map">
+                    <input type="text" id="storeAddress" class="input-field" placeholder="Search for a location or click on the map">
                 </div>
                 <div class="mt-4">
                     <label class="block text-sm font-medium mb-2">⚡ Notification Range</label>
@@ -69,27 +69,27 @@
                     </div>
                 </div>
                 <div class="flex justify-end space-x-2 mt-4">
-                    <button id="cancelLocation" class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">❌ Cancel</button>
-                    <button id="saveLocation" class="px-4 py-2 bg-tmobile text-white rounded hover:bg-opacity-90">💾 Save</button>
+                    <button id="cancelLocation" class="btn-secondary">❌ Cancel</button>
+                    <button id="saveLocation" class="btn">💾 Save</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Add Item Modal -->
-    <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+    <div id="addModal" class="hidden modal">
+        <div class="modal-content">
             <h2 class="text-xl font-bold mb-4">✏️ Add Item</h2>
             <div class="space-y-4">
-                <input type="text" id="itemInput" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="📝 Enter item name">
+                <input type="text" id="itemInput" class="input-field" placeholder="📝 Enter item name">
                 <div class="flex space-x-2">
-                    <button id="voiceInput" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                    <button id="voiceInput" class="flex-1 btn">
                         🎤 Voice
                     </button>
-                    <button id="cameraInput" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                    <button id="cameraInput" class="flex-1 btn">
                         📸 Camera
                     </button>
-                    <button id="galleryInput" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                    <button id="galleryInput" class="flex-1 btn">
                         🖼️ Gallery
                     </button>
                 </div>
@@ -106,8 +106,8 @@
                     </div>
                 </div>
                 <div class="flex justify-end space-x-2">
-                    <button id="cancelAdd" class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">❌ Cancel</button>
-                    <button id="confirmAdd" class="px-4 py-2 bg-tmobile text-white rounded hover:bg-opacity-90">✅ Add</button>
+                    <button id="cancelAdd" class="btn-secondary">❌ Cancel</button>
+                    <button id="confirmAdd" class="btn">✅ Add</button>
                 </div>
             </div>
         </div>
