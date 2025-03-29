@@ -2,8 +2,7 @@
 node_modules/
 package-lock.json
 
-# Build files
-dist/
+# Log files
 *.log
 
 # Environment files

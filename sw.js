@@ -35,8 +35,17 @@ self.addEventListener('fetch', event => {
 
       return fetch(fetchRequest).then(response => {
         // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+        // For CSS, explicitly check the Content-Type header if possible
+        const contentType = response.headers.get('content-type');
+        if (!response || response.status !== 200 || (contentType && !contentType.includes('text/css') && event.request.url.endsWith('.css'))) {
+           // Don't cache invalid responses or non-CSS files served for .css requests
+           console.warn(`SW: Not caching ${event.request.url} - Status: ${response.status}, Type: ${contentType}`);
+           return response;
+        }
+        // Also ensure we only cache 'basic' type responses (same-origin) to avoid opaque responses
+        if (response.type !== 'basic') {
+             console.warn(`SW: Not caching non-basic response for ${event.request.url}`);
+             return response;
         }
 
         // Clone the response because it can only be used once
