@@ -11,7 +11,7 @@ const CRITICAL_ASSETS = [
 ];
 
 const CSS_ASSETS = [
-  './dist/output.css'
+  './static/css/output.css'
 ];
 
 async function preCache() {

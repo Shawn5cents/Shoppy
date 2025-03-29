@@ -3,14 +3,34 @@
   "version": "1.0.0",
   "description": "Location-aware shopping reminder app",
   "scripts": {
-    "build": "cross-env NODE_ENV=production tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
-    "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
-    "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+    "build": "cross-env NODE_ENV=production tailwindcss -i ./src/input.css -o ./static/css/output.css --minify",
+    "watch": "tailwindcss -i ./src/input.css -o ./static/css/output.css --watch",
+    "dev": "tailwindcss -i ./src/input.css -o ./static/css/output.css --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
     "cross-env": "^7.0.3",
     "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@testing-library/dom": "^9.3.4",
+    "@testing-library/jest-dom": "^6.4.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/dist/**",
+      "!**/coverage/**"
+    ]
   }
 }
