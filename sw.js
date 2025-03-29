@@ -1,15 +1,39 @@
-const CACHE_VERSION = '1.0.0';
+const CACHE_VERSION = '1.0.1';
 const CACHE_NAME = `shoppy-${CACHE_VERSION}`;
 
-const ASSETS = [
+const CRITICAL_ASSETS = [
   './',
   './index.html',
   './app.js',
   './manifest.json',
-  './dist/output.css',
   './icons/icon-192.svg',
   './sw.js'
 ];
+
+const CSS_ASSETS = [
+  './dist/output.css'
+];
+
+async function preCache() {
+  const cache = await caches.open(CACHE_NAME);
+  await cache.addAll(CRITICAL_ASSETS);
+  
+  // Handle CSS separately with proper content type verification
+  for (const cssPath of CSS_ASSETS) {
+    try {
+      const response = await fetch(cssPath);
+      const contentType = response.headers.get('content-type');
+      
+      if (response.ok && contentType && contentType.includes('text/css')) {
+        await cache.put(cssPath, response);
+      } else {
+        console.warn(`Failed to cache CSS: ${cssPath} - Invalid content type: ${contentType}`);
+      }
+    } catch (error) {
+      console.error(`Failed to fetch CSS: ${cssPath}`, error);
+    }
+  }
+}
 
 // Install service worker and cache assets
 self.addEventListener('install', event => {
