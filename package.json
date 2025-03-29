@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Location-aware shopping reminder app",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
     "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "dependencies": {},
