@@ -84,11 +84,27 @@ self.addEventListener('fetch', event => {
     (async () => {
       try {
         // Skip cache operations if CacheStorage is not available
-        if (!caches) {
+        if (typeof caches === 'undefined') {
           return await fetch(event.request);
         }
         
-        const response = await caches.match(event.request);
+        // Handle Leaflet resources specially - skip cache if unavailable
+        if (event.request.url.includes('unpkg.com/leaflet')) {
+          try {
+            return await fetch(event.request);
+          } catch {
+            // Return empty response if Leaflet fails
+            return new Response('', {status: 200});
+          }
+        }
+        
+        let response;
+        try {
+          response = await caches.match(event.request);
+        } catch (cacheError) {
+          console.warn('Cache match failed:', cacheError);
+          return await fetch(event.request);
+        }
         if (response) {
           return response;
         }
