@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛍️ Shoppy - Smart Shopping Companion</title>
+    <meta name="description" content="Never forget items again! Smart shopping list manager with location-based reminders, voice input, and image recognition.">
+    <meta name="theme-color" content="#E20074">
+    <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+    <link rel="manifest" href="manifest.json">
+    <link href="dist/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <nav class="bg-gray-800 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-tmobile">🛍️ Shoppy</h1>
+            <div class="flex gap-2">
+                <button id="addListBtn" class="bg-tmobile text-white px-4 py-2 rounded-lg hover:bg-opacity-90">
+                    ✨ New List
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4">
+        <div id="lists" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Shopping lists will be populated here -->
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full bg-gray-800 p-4 text-center border-t border-gray-700">
+        <div class="container mx-auto text-sm">
+            <p class="text-gray-400">
+                Created by <span class="text-tmobile font-bold">Nichols AI</span> 💜
+            </p>
+        </div>
+    </footer>
+
+    <!-- Store Location Modal -->
+    <div id="locationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">📍 Set Store Location</h2>
+            <div class="space-y-4">
+                <div class="flex space-x-2">
+                    <button id="useCurrentLocation" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                        📱 Use Current Location
+                    </button>
+                    <button id="enterAddress" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                        🏪 Enter Address
+                    </button>
+                </div>
+                <div id="addressInput" class="hidden">
+                    <input type="text" id="storeAddress" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Enter store address">
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-2">⚡ Notification Range</label>
+                    <input type="range" id="notifyRadius" class="w-full" min="100" max="2000" step="100" value="500">
+                    <div class="text-sm text-gray-400 text-center">
+                        <span id="radiusValue">500</span> meters
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2 mt-4">
+                    <button id="cancelLocation" class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">❌ Cancel</button>
+                    <button id="saveLocation" class="px-4 py-2 bg-tmobile text-white rounded hover:bg-opacity-90">💾 Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">✏️ Add Item</h2>
+            <div class="space-y-4">
+                <input type="text" id="itemInput" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="📝 Enter item name">
+                <div class="flex space-x-2">
+                    <button id="voiceInput" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                        🎤 Voice
+                    </button>
+                    <button id="cameraInput" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                        📸 Camera
+                    </button>
+                    <button id="galleryInput" class="flex-1 bg-tmobile text-white p-2 rounded hover:bg-opacity-90">
+                        🖼️ Gallery
+                    </button>
+                </div>
+                <!-- Image Preview Section -->
+                <div id="imagePreview" class="hidden">
+                    <div class="relative w-full h-48 bg-gray-700 rounded overflow-hidden">
+                        <img id="previewImage" class="w-full h-full object-cover" src="" alt="Preview">
+                        <div id="imageOverlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white">
+                            <span id="processingText">📸 Processing image...</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-400 text-center" id="imageHint">
+                        Try to capture clear text in good lighting
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button id="cancelAdd" class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">❌ Cancel</button>
+                    <button id="confirmAdd" class="px-4 py-2 bg-tmobile text-white rounded hover:bg-opacity-90">✅ Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

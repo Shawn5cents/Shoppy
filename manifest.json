@@ -1,0 +1,17 @@
+{
+  "name": "Shoppy - Smart Shopping List Manager",
+  "short_name": "Shoppy",
+  "description": "Location-aware shopping reminder app with voice and image input",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#E20074",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
