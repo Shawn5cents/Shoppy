@@ -38,49 +38,49 @@ async function preCache() {
 // Install service worker and cache assets
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS);
-    })
+    Promise.all([
+      preCache(),
+      self.skipWaiting()
+    ])
   );
-  // Activate worker immediately
-  self.skipWaiting();
 });
 
 // Serve cached content when offline
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      // Return cached response if found
+    caches.match(event.request).then(async response => {
       if (response) {
         return response;
       }
-      // Clone the request because it can only be used once
-      const fetchRequest = event.request.clone();
 
-      return fetch(fetchRequest).then(response => {
-        // Check if we received a valid response
-        // For CSS, explicitly check the Content-Type header if possible
-        const contentType = response.headers.get('content-type');
-        if (!response || response.status !== 200 || (contentType && !contentType.includes('text/css') && event.request.url.endsWith('.css'))) {
-           // Don't cache invalid responses or non-CSS files served for .css requests
-           console.warn(`SW: Not caching ${event.request.url} - Status: ${response.status}, Type: ${contentType}`);
-           return response;
-        }
-        // Also ensure we only cache 'basic' type responses (same-origin) to avoid opaque responses
-        if (response.type !== 'basic') {
-             console.warn(`SW: Not caching non-basic response for ${event.request.url}`);
-             return response;
+      try {
+        const fetchRequest = event.request.clone();
+        const fetchResponse = await fetch(fetchRequest);
+        
+        // Don't cache non-successful responses
+        if (!fetchResponse || fetchResponse.status !== 200) {
+          return fetchResponse;
         }
 
-        // Clone the response because it can only be used once
-        const responseToCache = response.clone();
+        // Handle CSS files specially
+        if (event.request.url.endsWith('.css')) {
+          const contentType = fetchResponse.headers.get('content-type');
+          if (!contentType || !contentType.includes('text/css')) {
+            console.warn(`SW: Invalid CSS content type for ${event.request.url}`);
+            return fetchResponse;
+          }
+        }
 
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
-        });
+        // Cache successful responses
+        const responseToCache = fetchResponse.clone();
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(event.request, responseToCache);
 
-        return response;
-      });
+        return fetchResponse;
+      } catch (error) {
+        console.error('SW: Fetch failed:', error);
+        return response || new Response('Network error', { status: 503 });
+      }
     })
   );
 });
