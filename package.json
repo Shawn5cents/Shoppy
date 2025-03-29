@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "Location-aware shopping reminder app",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
-    "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+    "build": "cross-env NODE_ENV=production tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
-  "dependencies": {},
   "devDependencies": {
-    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.17",
+    "cross-env": "^7.0.3",
     "postcss": "^8.4.35",
-    "autoprefixer": "^10.4.17"
+    "tailwindcss": "^3.4.1"
   }
 }
