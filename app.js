@@ -493,9 +493,9 @@ if ('geolocation' in navigator) {
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js') // Ensure correct path
             .then(registration => {
-                console.log('ServiceWorker registration successful');
+                console.log('ServiceWorker registration successful with scope:', registration.scope);
             })
             .catch(error => {
                 console.log('ServiceWorker registration failed: ', error);
