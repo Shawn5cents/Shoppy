@@ -28,6 +28,9 @@ const confirmAddBtn = document.getElementById('confirmAdd');
 // State
 let currentList = null;
 let lists = JSON.parse(localStorage.getItem('shoppingLists')) || [];
+let map = null;
+let currentMarker = null;
+let radiusCircle = null;
 
 // Event Listeners
 addListBtn.addEventListener('click', () => showLocationModal());
@@ -37,9 +40,14 @@ useCurrentLocationBtn.addEventListener('click', getCurrentLocation);
 enterAddressBtn.addEventListener('click', () => {
     addressInput.classList.remove('hidden');
 });
+
+// Update radius value and circle on input change
 notifyRadiusInput.addEventListener('input', (e) => {
-    radiusValue.textContent = e.target.value;
+    const radius = parseInt(e.target.value);
+    radiusValue.textContent = radius;
+    updateRadiusCircle(radius);
 });
+
 cancelLocationBtn.addEventListener('click', hideLocationModal);
 saveLocationBtn.addEventListener('click', saveLocation);
 
@@ -54,12 +62,73 @@ confirmAddBtn.addEventListener('click', addItem);
 function showLocationModal() {
     locationModal.classList.remove('hidden');
     locationModal.classList.add('animate-fade');
+    
+    // Initialize map if not already done
+    if (!map) {
+        // Try to get user's location for initial map center
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    initializeMap([position.coords.latitude, position.coords.longitude]);
+                },
+                () => {
+                    // Default to a central location if geolocation fails
+                    initializeMap([40.7128, -74.0060]);
+                }
+            );
+        } else {
+            initializeMap([40.7128, -74.0060]);
+        }
+    } else {
+        // Force map to recalculate its size when shown
+        setTimeout(() => map.invalidateSize(), 100);
+    }
+}
+
+function initializeMap(center) {
+    map = L.map('locationMap').setView(center, 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add click handler to map
+    map.on('click', async (e) => {
+        const { lat, lng } = e.latlng;
+        setMarkerAndAddress(lat, lng);
+    });
+
+    // Force map to recalculate its size
+    setTimeout(() => map.invalidateSize(), 100);
+}
+
+function updateRadiusCircle(radius) {
+    if (currentMarker) {
+        if (radiusCircle) {
+            radiusCircle.setRadius(radius);
+        } else {
+            radiusCircle = L.circle(currentMarker.getLatLng(), {
+                radius: radius,
+                color: '#E20074',
+                fillColor: '#E20074',
+                fillOpacity: 0.1,
+                weight: 1
+            }).addTo(map);
+        }
+    }
 }
 
 function hideLocationModal() {
     locationModal.classList.add('hidden');
-    addressInput.classList.add('hidden');
     storeAddressInput.value = '';
+    if (currentMarker) {
+        currentMarker.remove();
+        currentMarker = null;
+    }
+    if (radiusCircle) {
+        radiusCircle.remove();
+        radiusCircle = null;
+    }
 }
 
 function getCurrentLocation() {
@@ -67,7 +136,8 @@ function getCurrentLocation() {
         navigator.geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
-                reverseGeocode(latitude, longitude);
+                map.setView([latitude, longitude], 16);
+                setMarkerAndAddress(latitude, longitude);
             },
             error => {
                 alert('Error getting location: ' + error.message);
@@ -78,6 +148,33 @@ function getCurrentLocation() {
     }
 }
 
+async function setMarkerAndAddress(lat, lon) {
+    // Update or create marker
+    if (currentMarker) {
+        currentMarker.setLatLng([lat, lon]);
+    } else {
+        currentMarker = L.marker([lat, lon], {
+            draggable: true
+        }).addTo(map);
+
+        // Update address when marker is dragged
+        currentMarker.on('dragend', function(e) {
+            const position = e.target.getLatLng();
+            reverseGeocode(position.lat, position.lng);
+            updateRadiusCircle(parseInt(notifyRadiusInput.value));
+        });
+    }
+
+    // Update radius circle
+    updateRadiusCircle(parseInt(notifyRadiusInput.value));
+
+    // Center map on marker
+    map.setView([lat, lon], map.getZoom());
+
+    // Get address for location
+    reverseGeocode(lat, lon);
+}
+
 async function reverseGeocode(lat, lon) {
     try {
         const response = await fetch(
@@ -85,25 +182,51 @@ async function reverseGeocode(lat, lon) {
         );
         const data = await response.json();
         storeAddressInput.value = data.display_name;
-        addressInput.classList.remove('hidden');
     } catch (error) {
         alert('Error getting address: ' + error.message);
     }
 }
 
+// Add search functionality to address input
+storeAddressInput.addEventListener('keypress', async function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const address = this.value;
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+            );
+            const data = await response.json();
+            if (data && data[0]) {
+                const { lat, lon } = data[0];
+                setMarkerAndAddress(parseFloat(lat), parseFloat(lon));
+            } else {
+                alert('Location not found');
+            }
+        } catch (error) {
+            alert('Error searching location: ' + error.message);
+        }
+    }
+});
+
 function saveLocation() {
     const address = storeAddressInput.value;
     const radius = parseInt(notifyRadiusInput.value);
     
-    if (!address) {
-        alert('Please enter a store address');
+    if (!address || !currentMarker) {
+        alert('Please select a store location on the map');
         return;
     }
 
+    const coords = currentMarker.getLatLng();
     const newList = {
         id: Date.now(),
         store: address,
         radius,
+        coordinates: {
+            lat: coords.lat,
+            lon: coords.lng
+        },
         items: []
     };
 
@@ -131,8 +254,8 @@ function hideAddModal() {
 function startVoiceInput() {
     if ('webkitSpeechRecognition' in window) {
         const recognition = new webkitSpeechRecognition();
-        recognition.continuous = false; // Only capture a single utterance
-        recognition.interimResults = true; // Show results as they come in
+        recognition.continuous = false;
+        recognition.interimResults = true;
 
         const originalButtonText = voiceInputBtn.innerHTML;
         voiceInputBtn.innerHTML = '👂 Listening...';
@@ -149,7 +272,6 @@ function startVoiceInput() {
                     interimTranscript += event.results[i][0].transcript;
                 }
             }
-            // Display interim results with placeholder styling
             itemInput.value = finalTranscript || interimTranscript;
             itemInput.placeholder = finalTranscript ? '📝 Enter item name' : '🗣️ Speak now...';
         };
@@ -165,7 +287,6 @@ function startVoiceInput() {
                 errorMessage = 'Permission denied. Please allow microphone access.';
             }
             alert(errorMessage);
-            // Reset button state on error
             voiceInputBtn.innerHTML = originalButtonText;
             voiceInputBtn.disabled = false;
             voiceInputBtn.classList.remove('opacity-75', 'cursor-not-allowed');
@@ -173,7 +294,6 @@ function startVoiceInput() {
         };
 
         recognition.onend = () => {
-            // Reset button state when recognition ends
             voiceInputBtn.innerHTML = originalButtonText;
             voiceInputBtn.disabled = false;
             voiceInputBtn.classList.remove('opacity-75', 'cursor-not-allowed');
@@ -185,13 +305,11 @@ function startVoiceInput() {
         } catch (e) {
             console.error("Could not start recognition:", e);
             alert("Could not start voice recognition. Please try again.");
-            // Reset button state if start fails
             voiceInputBtn.innerHTML = originalButtonText;
             voiceInputBtn.disabled = false;
             voiceInputBtn.classList.remove('opacity-75', 'cursor-not-allowed');
             itemInput.placeholder = '📝 Enter item name';
         }
-
     } else {
         alert('Speech recognition is not supported by your browser. Try Chrome or Edge.');
     }
@@ -234,13 +352,11 @@ function processImage(file) {
     imageOverlay.classList.remove('hidden');
     
     try {
-        // Create a canvas to process the image
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
         
         img.onload = () => {
-            // Scale image if too large
             const MAX_SIZE = 1024;
             let width = img.width;
             let height = img.height;
@@ -255,8 +371,6 @@ function processImage(file) {
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
             
-            // For demo purposes, simulate OCR with a timeout
-            // In production, this would use Tesseract.js or a similar OCR library
             setTimeout(() => {
                 imageOverlay.classList.add('hidden');
                 itemInput.value = 'Scanned Item ' + new Date().toLocaleTimeString();
@@ -411,81 +525,62 @@ async function getAddressCoordinates(address) {
 async function checkNearbyStores(userLat, userLon) {
     let listsUpdated = false;
     for (const list of lists) {
-        // Fetch coordinates if missing
-        if (!list.coordinates && list.store) {
-            const coords = await getAddressCoordinates(list.store);
-            if (coords) {
-                list.coordinates = coords;
-                listsUpdated = true;
-            } else {
-                // Skip this list if coordinates can't be found
-                continue;
-            }
-        }
+        // Use stored coordinates or fetch them if missing
+        const coordinates = list.coordinates || await getAddressCoordinates(list.store);
+        if (!coordinates) continue;
 
-        // Check distance if coordinates are available
-        if (list.coordinates) {
-            const distance = calculateDistance(
-                userLat,
-                userLon,
-                list.coordinates.lat,
-                list.coordinates.lon
-            );
+        const distance = calculateDistance(
+            userLat,
+            userLon,
+            coordinates.lat,
+            coordinates.lon
+        );
 
-            // Trigger notification if within radius and not recently notified
-            if (distance <= list.radius && !list.notified) {
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    const itemCount = list.items.filter(item => !item.completed).length;
-                    if (itemCount > 0) {
-                        const notification = new Notification('🛍️ Nearby Store Alert!', {
-                            body: `You're near ${list.store} (${Math.round(distance)}m away)! You have ${itemCount} items left.`,
-                            icon: 'icons/icon-192.svg',
-                            tag: `shoppy-list-${list.id}` // Use tag to prevent duplicate notifications
-                        });
-                        list.notified = true;
-                        listsUpdated = true;
-                        // Set a timeout to allow re-notification after 30 minutes
-                        setTimeout(() => {
-                            const currentList = lists.find(l => l.id === list.id);
-                            if (currentList) {
-                                currentList.notified = false;
-                                localStorage.setItem('shoppingLists', JSON.stringify(lists));
-                            }
-                        }, 1800000);
-                    }
-                } else if ('Notification' in window && Notification.permission !== 'denied') {
-                    // Request permission if not granted or denied
-                    Notification.requestPermission();
+        // Trigger notification if within radius and not recently notified
+        if (distance <= list.radius && !list.notified) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const itemCount = list.items.filter(item => !item.completed).length;
+                if (itemCount > 0) {
+                    const notification = new Notification('🛍️ Nearby Store Alert!', {
+                        body: `You're near ${list.store} (${Math.round(distance)}m away)! You have ${itemCount} items left.`,
+                        icon: 'icons/icon-192.svg',
+                        tag: `shoppy-list-${list.id}`
+                    });
+                    list.notified = true;
+                    listsUpdated = true;
+                    setTimeout(() => {
+                        const currentList = lists.find(l => l.id === list.id);
+                        if (currentList) {
+                            currentList.notified = false;
+                            localStorage.setItem('shoppingLists', JSON.stringify(lists));
+                        }
+                    }, 1800000); // Re-notify after 30 minutes
                 }
-            } else if (distance > list.radius && list.notified) {
-                // Reset notified status if user moves out of range (optional)
-                // list.notified = false;
-                // listsUpdated = true;
+            } else if ('Notification' in window && Notification.permission !== 'denied') {
+                Notification.requestPermission();
             }
         }
     }
-    // Save updated lists to local storage if changes were made
+
     if (listsUpdated) {
         localStorage.setItem('shoppingLists', JSON.stringify(lists));
     }
 }
 
-// Start location monitoring with improved options and error handling
+// Start location monitoring
 if ('geolocation' in navigator) {
-    const watchId = navigator.geolocation.watchPosition(
+    navigator.geolocation.watchPosition(
         position => {
             const { latitude, longitude } = position.coords;
             checkNearbyStores(latitude, longitude);
         },
         error => {
             console.error('Geolocation error:', error.message);
-            // Optionally inform the user about the error
-            // alert(`Geolocation error: ${error.message}`);
         },
         {
-            enableHighAccuracy: true, // Request more accurate position
-            maximumAge: 60000,       // Use cached position up to 1 minute old
-            timeout: 10000           // Wait up to 10 seconds for position
+            enableHighAccuracy: true,
+            maximumAge: 60000,
+            timeout: 10000
         }
     );
 }
@@ -493,12 +588,12 @@ if ('geolocation' in navigator) {
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js') // Ensure correct path
+        navigator.serviceWorker.register('./sw.js')
             .then(registration => {
                 console.log('ServiceWorker registration successful with scope:', registration.scope);
             })
             .catch(error => {
-                console.log('ServiceWorker registration failed: ', error);
+                console.log('ServiceWorker registration failed:', error);
             });
     });
 }

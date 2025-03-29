@@ -10,6 +10,12 @@
     <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" type="text/css" href="static/css/output.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/KFQN2E1icXQ8CtjSI="
+          crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
     <nav class="bg-gray-800 p-4 shadow-lg">
@@ -50,8 +56,10 @@
                         🏪 Enter Address
                     </button>
                 </div>
-                <div id="addressInput" class="hidden">
-                    <input type="text" id="storeAddress" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Enter store address">
+                <!-- Map Container -->
+                <div id="locationMap" class="w-full h-64 rounded-lg mb-4"></div>
+                <div id="addressInput">
+                    <input type="text" id="storeAddress" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Search for a location or click on the map">
                 </div>
                 <div class="mt-4">
                     <label class="block text-sm font-medium mb-2">⚡ Notification Range</label>
