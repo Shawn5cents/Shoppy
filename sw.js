@@ -22,8 +22,13 @@ async function preCache() {
   // Cache critical assets
   for (const asset of CRITICAL_ASSETS) {
     try {
-      const response = await fetch(asset, { mode: 'no-cors' });
-      if (response.ok || response.type === 'opaque') {
+      // Skip external resources if cache is not available
+      if (!caches || asset.startsWith('http')) {
+        continue;
+      }
+      
+      const response = await fetch(asset);
+      if (response.ok) {
         await cache.put(asset, response);
       }
     } catch (error) {
@@ -76,12 +81,18 @@ self.addEventListener('fetch', event => {
   }
 
   event.respondWith(
-    caches.match(event.request).then(async response => {
-      if (response) {
-        return response;
-      }
-
+    (async () => {
       try {
+        // Skip cache operations if CacheStorage is not available
+        if (!caches) {
+          return await fetch(event.request);
+        }
+        
+        const response = await caches.match(event.request);
+        if (response) {
+          return response;
+        }
+
         const fetchRequest = event.request.clone();
         const fetchResponse = await fetch(fetchRequest);
         
@@ -109,9 +120,9 @@ self.addEventListener('fetch', event => {
         return fetchResponse;
       } catch (error) {
         console.error('SW: Fetch failed:', error);
-        return response || new Response('Network error', { status: 503 });
+        return new Response('Network error', { status: 503 });
       }
-    })
+    })()
   );
 });
 
