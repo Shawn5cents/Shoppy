@@ -13,7 +13,7 @@ const STORES = {
 // Initialize the database
 const initDB = async () => {
   return openDB(DB_NAME, DB_VERSION, {
-    upgrade(db, oldVersion, newVersion, transaction) {
+    async upgrade(db, oldVersion, newVersion, transaction) {
       // Create stores if they don't exist
       if (!db.objectStoreNames.contains(STORES.SHOPPING_LISTS)) {
         const listsStore = db.createObjectStore(STORES.SHOPPING_LISTS, { keyPath: 'id', autoIncrement: true });
