@@ -1,0 +1,153 @@
+.reminders {
+  padding: 1rem;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.reminders h2 {
+  margin-top: 0;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.notification-permission {
+  background-color: var(--warning-light);
+  color: var(--warning);
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.notification-permission p {
+  margin: 0 0 0.5rem;
+}
+
+.permission-btn {
+  padding: 0.5rem 0.75rem;
+  background-color: var(--warning);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.permission-btn:hover {
+  background-color: var(--warning-dark);
+}
+
+.add-reminder-form {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--background);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.add-reminder-form button {
+  padding: 0.75rem 1rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+}
+
+.add-reminder-form button:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+}
+
+.add-reminder-form button:disabled {
+  background-color: var(--disabled);
+  cursor: not-allowed;
+}
+
+.reminders-list h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.reminders-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reminder-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--background);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.reminder-info {
+  flex: 1;
+}
+
+.reminder-info h4 {
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+}
+
+.reminder-info p {
+  margin: 0.25rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.reminder-item .delete-btn {
+  padding: 0.5rem 0.75rem;
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.reminder-item .delete-btn:hover {
+  background-color: var(--danger-dark);
+}
+
+.empty-list {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}

@@ -1,0 +1,108 @@
+:root {
+  /* Color variables */
+  --primary: #e20074; /* T-Mobile Pink */
+  --primary-dark: #b1005a;
+  --primary-light: #ff4d9e;
+  --secondary: #0077c8; /* Blue */
+  --secondary-dark: #005a9e;
+  --secondary-light: #4da3e5;
+  --background: #121212; /* Dark background */
+  --card-bg: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --input-bg: #2a2a2a;
+  --input-hover: #3a3a3a;
+  --danger: #e53935;
+  --danger-dark: #c62828;
+  --danger-light: #ffcdd2;
+  --warning: #ffa000;
+  --warning-dark: #ff8f00;
+  --warning-light: #ffecb3;
+  --success: #43a047;
+  --success-dark: #388e3c;
+  --success-light: #c8e6c9;
+  --disabled: #757575;
+  --favorite-bg: rgba(255, 160, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* Focus styles for accessibility */
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .content {
+    padding: 0.5rem;
+  }
+}

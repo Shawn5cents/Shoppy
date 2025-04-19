@@ -1,0 +1,177 @@
+.shopping-lists {
+  margin-bottom: 1.5rem;
+}
+
+.shopping-lists h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.error-message {
+  background-color: var(--danger-light);
+  color: var(--danger);
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.lists {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.list-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: var(--card-bg);
+  border: none;
+  text-align: left;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.list-item.active .list-button {
+  background-color: var(--primary);
+  color: white;
+}
+
+.list-button:hover {
+  background-color: var(--primary-light);
+  color: white;
+}
+
+.list-name {
+  font-weight: 500;
+}
+
+.default-badge {
+  font-size: 0.7rem;
+  background-color: var(--secondary);
+  color: white;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.list-item.active .default-badge {
+  background-color: white;
+  color: var(--primary);
+}
+
+.list-actions {
+  display: flex;
+  margin-left: 0.5rem;
+}
+
+.list-actions button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.set-default-btn:hover {
+  color: var(--warning);
+}
+
+.delete-btn:hover {
+  color: var(--danger);
+}
+
+.delete-btn:disabled {
+  color: var(--disabled);
+  cursor: not-allowed;
+}
+
+.create-list-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.create-list-btn:hover {
+  background-color: var(--secondary-dark);
+}
+
+.new-list-form {
+  background-color: var(--card-bg);
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.new-list-form input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.form-actions button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.form-actions button[type="submit"] {
+  background-color: var(--success);
+  color: white;
+}
+
+.form-actions button[type="submit"]:hover:not(:disabled) {
+  background-color: var(--success-dark);
+}
+
+.form-actions button[type="submit"]:disabled {
+  background-color: var(--disabled);
+  cursor: not-allowed;
+}
+
+.form-actions button[type="button"] {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: var(--danger);
+  color: white;
+}
