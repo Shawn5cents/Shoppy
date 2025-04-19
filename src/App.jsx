@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { registerSW } from 'virtual:pwa-register'
 import Header from './components/Header'
-import ShoppingList from './components/ShoppingList'
+import GroceryGrid from './components/GroceryGrid'
+import ListManager from './components/ListManager'
 import StoreLocator from './components/StoreLocator'
 import Reminders from './components/Reminders'
-import { getItems, getFavoriteStores } from './services/storageService'
+import { getItems, getFavoriteStores, getLists, getDefaultList, addList } from './services/storageService'
 import './App.css'
 
 // Register service worker for PWA
@@ -24,19 +25,43 @@ function App() {
   const [selectedStore, setSelectedStore] = useState(null)
   const [favoriteStores, setFavoriteStores] = useState([])
   const [shoppingItems, setShoppingItems] = useState([])
+  const [lists, setLists] = useState([])
+  const [activeListId, setActiveListId] = useState(null)
 
-  // Load favorite stores on component mount
+  // Load lists, favorite stores on component mount
   useEffect(() => {
-    const loadStores = async () => {
+    const loadData = async () => {
       try {
+        // Load shopping lists
+        let allLists = await getLists()
+
+        // Create a default list if none exists
+        if (allLists.length === 0) {
+          await addList({ name: 'My Shopping List', isDefault: true })
+          allLists = await getLists() // Reload lists after creating default
+        }
+
+        setLists(allLists)
+
+        // Set active list to default list
+        if (allLists.length > 0) {
+          const defaultList = await getDefaultList()
+          if (defaultList) {
+            setActiveListId(defaultList.id)
+          } else if (allLists[0]) {
+            setActiveListId(allLists[0].id)
+          }
+        }
+
+        // Load favorite stores
         const stores = await getFavoriteStores()
         setFavoriteStores(stores)
       } catch (error) {
-        console.error('Error loading stores:', error)
+        console.error('Error loading initial data:', error)
       }
     }
 
-    loadStores()
+    loadData()
   }, [])
 
   // Update shopping items when active tab changes to reminders
@@ -60,6 +85,11 @@ function App() {
     setActiveTab(tab)
   }
 
+  // Handle list change
+  const handleListChange = (listId) => {
+    setActiveListId(listId)
+  }
+
   // Handle store selection
   const handleStoreSelect = (store) => {
     setSelectedStore(store)
@@ -73,9 +103,19 @@ function App() {
         onTabChange={handleTabChange}
       />
 
+      {activeTab === 'shopping-list' && (
+        <ListManager
+          lists={lists}
+          activeListId={activeListId}
+          onListChange={handleListChange}
+          onListsUpdate={setLists}
+        />
+      )}
+
       <main className="content">
         {activeTab === 'shopping-list' && (
-          <ShoppingList
+          <GroceryGrid
+            activeListId={activeListId}
             selectedStore={selectedStore}
           />
         )}

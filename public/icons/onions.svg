@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M12,2 C8.7,2 6,4.7 6,8 L6,10 C3.8,10 2,11.8 2,14 L2,16 C2,18.2 3.8,20 6,20 L18,20 C20.2,20 22,18.2 22,16 L22,14 C22,11.8 20.2,10 18,10 L18,8 C18,4.7 15.3,2 12,2 Z M12,4 C14.2,4 16,5.8 16,8 L16,10 L8,10 L8,8 C8,5.8 9.8,4 12,4 Z M6,12 L18,12 C19.1,12 20,12.9 20,14 L20,16 C20,17.1 19.1,18 18,18 L6,18 C4.9,18 4,17.1 4,16 L4,14 C4,12.9 4.9,12 6,12 Z" fill="#BDBDBD"></path>
+    </g>
+</svg>

@@ -1,0 +1,248 @@
+.list-manager {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.list-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.list-manager-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.add-list-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-list-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.lists-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.lists {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background-color: var(--input-bg);
+  border-radius: 8px;
+  transition: background-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background-color: var(--input-hover);
+}
+
+.list-item.active {
+  background-color: var(--primary);
+  color: white;
+  transform: translateX(4px);
+}
+
+.list-name {
+  flex: 1;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.default-badge {
+  font-size: 0.7rem;
+  background-color: var(--secondary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.list-item.active .default-badge {
+  background-color: white;
+  color: var(--primary);
+}
+
+.list-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.list-actions button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.list-actions button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.list-item.active .list-actions button {
+  color: white;
+}
+
+.list-item.active .list-actions button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.default-btn {
+  color: var(--warning);
+}
+
+.edit-btn {
+  color: var(--secondary);
+}
+
+.delete-btn {
+  color: var(--danger);
+}
+
+.empty-lists {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 20px 0;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-actions button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.cancel-btn:hover {
+  background-color: var(--input-hover);
+}
+
+.submit-btn {
+  background-color: var(--primary);
+  border: none;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.submit-btn:disabled {
+  background-color: var(--disabled);
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .list-manager {
+    padding: 16px;
+  }
+  
+  .list-item {
+    padding: 10px 12px;
+  }
+}

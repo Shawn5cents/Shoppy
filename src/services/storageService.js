@@ -83,7 +83,16 @@ export const getList = async (id) => {
 
 export const getDefaultList = async () => {
   const db = await initDB();
-  return db.getFromIndex(STORES.SHOPPING_LISTS, 'isDefault', true);
+  try {
+    // Use getAllFromIndex and find the first one that is default
+    const lists = await db.getAllFromIndex(STORES.SHOPPING_LISTS, 'isDefault');
+    return lists.find(list => list.isDefault === true);
+  } catch (error) {
+    console.error('Error getting default list:', error);
+    // Fallback: get all lists and find the default one
+    const allLists = await db.getAll(STORES.SHOPPING_LISTS);
+    return allLists.find(list => list.isDefault === true);
+  }
 };
 
 export const addList = async (list) => {
